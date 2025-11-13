@@ -1,6 +1,7 @@
 services:
   mariadb:
-    container_name: mariadb 
+    container_name: mariadb
+    image: mariadb
     networks:
       - inception
     build: 
@@ -15,6 +16,7 @@ services:
  
   nginx:
     container_name: nginx
+    image: nginx
     networks:
       - inception
     depends_on: 
@@ -24,7 +26,6 @@ services:
       context: requirements/nginx
     env_file:
       - .env
-    # Mapper le port 443 du conteneur sur le port 443 de la machine locale
     ports:
       - "443:443"
     volumes:
@@ -32,6 +33,7 @@ services:
 
   wordpress:
     container_name: wordpress
+    image: wordpress
     networks:
       - inception
     depends_on: 
@@ -48,26 +50,19 @@ services:
 
 volumes:
   wordpress:
-    # Utiliser le driver local pour le volume
     driver: local
     driver_opts:
-      # Indique à Docker de ne pas créer un volume virtuel.
       type: 'none'
-      # Demande à Docker de travailler directement dans le dossier de l'hôte spécifié.
       o: 'bind'
       device: "/home/lcadinot/data/wordpress"
   mariadb:
-    # Utiliser le driver local pour le volume
     driver: local
     driver_opts:
-      # Indique à Docker de ne pas créer un volume virtuel.
       type: 'none'
-      # Demande à Docker de travailler directement dans le dossier de l'hôte spécifié.
       o: 'bind'
       device: "/home/lcadinot/data/mariadb"
 
 networks:
   inception:
     name: inception
-    # Utiliser le driver bridge pour permettre la communication entre les conteneurs
     driver: bridge
